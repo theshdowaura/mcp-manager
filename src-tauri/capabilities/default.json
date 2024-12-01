@@ -1,0 +1,124 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-capability",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "fs:default",
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "/**" }]
+    },
+    "dialog:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "brew-commands",
+          "cmd": "brew",
+          "args": [
+            {
+              "validator": "^(install|list|uninstall)$"
+            },
+            {
+              "validator": "^(python@3\\.11|node@20|uv)$"
+            }
+          ]
+        },
+        {
+          "name": "python-commands",
+          "cmd": "python3",
+          "args": [
+            {
+              "validator": "^(--version|-m)$"
+            },
+            {
+              "validator": "^(pip|venv)$"
+            },
+            {
+              "validator": ".+"
+            }
+          ]
+        },
+        {
+          "name": "python-windows",
+          "cmd": "python",
+          "args": [
+            {
+              "validator": "^(--version|-m)$"
+            },
+            {
+              "validator": "^(pip|venv)$"
+            },
+            {
+              "validator": ".+"
+            }
+          ]
+        },
+        {
+          "name": "node-commands",
+          "cmd": "node",
+          "args": [
+            {
+              "validator": "^--version$"
+            }
+          ]
+        },
+        {
+          "name": "npx-commands",
+          "cmd": "npx",
+          "args": [
+            {
+              "validator": ".+"
+            }
+          ]
+        },
+        {
+          "name": "pip-commands",
+          "cmd": "pip",
+          "args": [
+            {
+              "validator": "^(install|uninstall|list)$"
+            },
+            {
+              "validator": ".+"
+            }
+          ]
+        },
+        {
+          "name": "pip3-commands",
+          "cmd": "pip3",
+          "args": [
+            {
+              "validator": "^(install|uninstall|list)$"
+            },
+            {
+              "validator": ".+"
+            }
+          ]
+        },
+        {
+          "name": "uv-commands",
+          "cmd": "uv",
+          "args": [
+            {
+              "validator": "^(--version|pip)$"
+            },
+            {
+              "validator": ".+"
+            }
+          ]
+        },
+        {
+          "name": "uvx-commands",
+          "cmd": "uvx",
+          "args": [
+            {
+              "validator": ".+"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

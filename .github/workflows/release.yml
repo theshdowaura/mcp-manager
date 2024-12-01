@@ -1,0 +1,116 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. v0.1.0)'
+        required: true
+        default: 'v0.1.0'
+
+jobs:
+  release:
+    permissions:
+      contents: write
+      discussions: write
+      pull-requests: write
+      issues: write
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Sync node version and setup cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.6.1
+          cache: 'yarn'
+
+      - name: Install frontend dependencies
+        run: yarn install
+
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.event.inputs.version || github.ref_name }}
+          releaseName: 'MCP Manager v__VERSION__'
+          releaseBody: 'See the assets to download and install this version.'
+          releaseDraft: false
+          prerelease: false
+
+      - name: Create permission fix script
+        run: |
+          cat > "点我修复无法打开.command" << 'EOL'
+          #!/bin/bash
+          
+          # 设置颜色输出
+          GREEN='\033[0;32m'
+          NC='\033[0m' # No Color
+          
+          echo "开始修复 MCP Manager 权限..."
+          
+          # 执行移除 quarantine 属性的命令
+          xattr -d com.apple.quarantine /Applications/MCP\ Manager.app 2>/dev/null
+          
+          # 检查命令执行结果
+          if [ $? -eq 0 ]; then
+              echo -e "${GREEN}✓ 修复成功！${NC}"
+              echo "现在您可以正常打开 MCP Manager 了。"
+          else
+              echo "⚠️  请确保 MCP Manager.app 已经安装在应用程序文件夹中。"
+          fi
+          
+          # 等待用户按任意键退出
+          echo ""
+          read -n 1 -s -r -p "按任意键退出..."
+          EOL
+          chmod +x "点我修复无法打开.command"
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Create DMG
+        run: |
+          # 创建临时目录
+          mkdir -p ./temp_dmg
+          # 复制应用和修复脚本
+          cp -r "src-tauri/target/release/bundle/macos/MCP Manager.app" ./temp_dmg/
+          cp "点我修复无法打开.command" ./temp_dmg/
+          # 创建 Applications 文件夹快捷方式
+          ln -s /Applications ./temp_dmg/
+          # 创建 DMG
+          create-dmg \
+            --volname "MCP Manager" \
+            --window-pos 200 120 \
+            --window-size 800 400 \
+            --icon-size 100 \
+            --icon "MCP Manager.app" 200 190 \
+            --icon "点我修复无法打开.command" 400 190 \
+            --icon "Applications" 600 190 \
+            --hide-extension "MCP Manager.app" \
+            --hide-extension "点我修复无法打开.command" \
+            --app-drop-link 600 185 \
+            "MCP Manager.dmg" \
+            ./temp_dmg
+
+      - name: Upload DMG to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ github.event.inputs.version || github.ref_name }} "MCP Manager.dmg"
