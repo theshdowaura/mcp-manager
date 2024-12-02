@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
+import { Input } from "./ui/input";
 
 interface ServerCardProps {
   name: string;
@@ -26,51 +26,40 @@ export function ServerCard({
   selectedPath,
 }: ServerCardProps) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-xl font-bold">{name}</CardTitle>
-        <Badge variant={status ? "success" : "secondary"}>
-          {status ? "运行中" : "已停止"}
-        </Badge>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+    <Card className="border shadow-sm hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between mb-4">
           <div>
-            <p className="text-sm font-medium">Command:</p>
-            <p className="text-sm text-muted-foreground">{command}</p>
+            <h3 className="text-xl font-semibold mb-1">{name}</h3>
+            <p className="text-sm text-muted-foreground">
+              Path: {currentPath || args[args.length - 1]}
+            </p>
           </div>
-          {currentPath && (
-            <div>
-              <p className="text-sm font-medium">当前目录:</p>
-              <p className="text-sm text-muted-foreground">{currentPath}</p>
-              {selectedPath && !status && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  新选择的目录: {selectedPath}
-                </p>
-              )}
-            </div>
-          )}
-          <div>
-            <p className="text-sm font-medium">Args:</p>
-            <p className="text-sm text-muted-foreground">{args.join(" ")}</p>
-          </div>
-          <div className="flex space-x-2">
-            {onSelectDirectory && !status && (
-              <Button variant="outline" onClick={onSelectDirectory}>
-                选择目录
-              </Button>
-            )}
+          <div className="flex gap-2">
             <Button
               variant={status ? "destructive" : "default"}
               onClick={onStart}
             >
-              {status ? "停止" : "启动"}
+              {status ? "Stop" : "Start"}
             </Button>
-            <Button variant="destructive" onClick={onDelete}>
-              删除
+            <Button variant="outline" onClick={onDelete}>
+              Uninstall
             </Button>
           </div>
         </div>
+
+        {onSelectDirectory && !status && (
+          <div className="flex gap-2 mt-4">
+            <Input
+              value={selectedPath || ""}
+              placeholder="Select directory"
+              readOnly
+            />
+            <Button variant="outline" onClick={onSelectDirectory}>
+              Browse
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

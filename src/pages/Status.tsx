@@ -1,4 +1,5 @@
-import { EnvironmentCheck } from "../components/EnvironmentCheck";
+import { EnvironmentCheck } from "@/components/EnvironmentCheck";
+import { PageLayout } from "@/components/PageLayout";
 
 interface StatusPageProps {
   pythonPath: string;
@@ -20,14 +21,16 @@ export function StatusPage({
   installMessage,
 }: StatusPageProps) {
   return (
-    <EnvironmentCheck
-      pythonPath={pythonPath}
-      nodePath={nodePath}
-      uvPath={uvPath}
-      claudeInstalled={claudeInstalled}
-      installing={installing}
-      onInstall={onInstall}
-      installMessage={installMessage}
-    />
+    <PageLayout title="Environment Status">
+      <EnvironmentCheck
+        pythonPath={pythonPath}
+        nodePath={nodePath}
+        uvPath={uvPath}
+        claudeInstalled={claudeInstalled}
+        installing={installing}
+        onInstall={onInstall}
+        installMessage={installMessage}
+      />
+    </PageLayout>
   );
 }

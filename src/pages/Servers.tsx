@@ -1,10 +1,8 @@
-import { McpServerTemplate, EnvInputs } from "../types";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "../components/ui/card";
+import { McpServerTemplate, EnvInputs } from "@/types";
+import { Card, CardContent } from "@/components/ui/card";
+import { PageLayout } from "@/components/PageLayout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface ServersPageProps {
   availableServers: McpServerTemplate[];
@@ -24,117 +22,76 @@ export function ServersPage({
   onInstallServer,
 }: ServersPageProps) {
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">可用的 MCP Servers</h2>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <PageLayout title="Available Servers">
+      <div className="space-y-4">
         {availableServers.map((template) => (
-          <Card key={template.name} className="flex flex-col">
-            <CardHeader>
-              <CardTitle>{template.name}</CardTitle>
-              <p className="text-sm text-muted-foreground mt-2">
-                {template.description}
-              </p>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <div className="space-y-4">
+          <Card key={template.name} className="border shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-sm font-medium">Command:</p>
+                  <h3 className="text-xl font-semibold mb-1">{template.name}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {template.command}
+                    {template.description}
                   </p>
                 </div>
-                {template.name === "filesystem" && (
-                  <div>
-                    <p className="text-sm font-medium mb-2">选择目录:</p>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        className="flex-1 px-3 py-2 bg-background border rounded-md"
-                        value={
-                          selectedPath[template.name] ||
-                          "/Users/default/Desktop"
-                        }
-                        readOnly
-                        placeholder="点击选择目录"
-                      />
-                      <button
-                        className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-                        onClick={() => onSelectDirectory(template.name)}
-                      >
-                        选择
-                      </button>
-                    </div>
+                {template.installed ? (
+                  <div className="text-sm text-muted-foreground px-4 py-2 bg-accent rounded-md">
+                    Installed
                   </div>
-                )}
-                <div>
-                  <p className="text-sm font-medium">Args:</p>
-                  <p className="text-sm text-muted-foreground break-all">
-                    {template.args
-                      .map((arg) =>
-                        arg === "/Users/default/Desktop" &&
-                        template.name === "filesystem"
-                          ? selectedPath[template.name] || arg
-                          : arg
+                ) : (
+                  <Button
+                    onClick={() => onInstallServer(template)}
+                    disabled={
+                      template.env &&
+                      Object.keys(template.env).some(
+                        (key) => !envInputs[`${template.name}_${key}`]
                       )
-                      .join(" ")}
-                  </p>
-                </div>
-                {template.env && (
-                  <div>
-                    <p className="text-sm font-medium mb-2">环境变量配置:</p>
-                    <div className="space-y-2">
-                      {Object.entries(template.env).map(
-                        ([key, defaultValue]) => (
-                          <div
-                            key={key}
-                            className="grid grid-cols-3 gap-2 items-center"
-                          >
-                            <label
-                              htmlFor={`${template.name}_${key}`}
-                              className="text-sm"
-                            >
-                              {key}:
-                            </label>
-                            <input
-                              id={`${template.name}_${key}`}
-                              className="col-span-2 px-3 py-2 bg-background border rounded-md"
-                              placeholder={defaultValue}
-                              value={envInputs[`${template.name}_${key}`] || ""}
-                              onChange={(e) =>
-                                onEnvInput(template.name, key, e.target.value)
-                              }
-                            />
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
+                    }
+                  >
+                    Install Server
+                  </Button>
                 )}
               </div>
-            </CardContent>
-            <div className="p-6 pt-0">
-              {template.installed ? (
-                <div className="text-sm text-muted-foreground text-center py-2 bg-accent rounded-md">
-                  已安装
+
+              {!template.installed && (
+                <div className="space-y-4">
+                  {template.name === "filesystem" && (
+                    <div className="flex gap-2">
+                      <Input
+                        value={selectedPath[template.name] || "/Users/default/Desktop"}
+                        placeholder="Select directory"
+                        readOnly
+                      />
+                      <Button variant="outline" onClick={() => onSelectDirectory(template.name)}>
+                        Browse
+                      </Button>
+                    </div>
+                  )}
+
+                  {template.env && (
+                    <div className="space-y-2">
+                      {Object.entries(template.env).map(([key, defaultValue]) => (
+                        <div key={key} className="flex gap-2 items-center">
+                          <label className="text-sm font-medium min-w-[120px]">
+                            {key}:
+                          </label>
+                          <Input
+                            value={envInputs[`${template.name}_${key}`] || ""}
+                            onChange={(e) =>
+                              onEnvInput(template.name, key, e.target.value)
+                            }
+                            placeholder={defaultValue}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <button
-                  className="w-full py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
-                  onClick={() => onInstallServer(template)}
-                  disabled={
-                    template.env &&
-                    Object.keys(template.env).some(
-                      (key) => !envInputs[`${template.name}_${key}`]
-                    )
-                  }
-                >
-                  安装此 Server
-                </button>
               )}
-            </div>
+            </CardContent>
           </Card>
         ))}
       </div>
-    </div>
+    </PageLayout>
   );
 }

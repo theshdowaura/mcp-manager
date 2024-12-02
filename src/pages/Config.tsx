@@ -1,15 +1,16 @@
-import { HotkeyInput } from "../components/HotkeyInput";
+import { HotkeyInput } from "@/components/HotkeyInput";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
-import { ClaudeConfig as ClaudeConfigComponent } from "../components/ClaudeConfig";
-import type { ClaudeConfig, ServerStatus } from "../types";
+} from "@/components/ui/card";
+import { ClaudeConfig as ClaudeConfigComponent } from "@/components/ClaudeConfig";
+import type { ClaudeConfig, ServerStatus } from "@/types";
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { useClaudeConfig } from "../hooks/useClaudeConfig";
+import { useClaudeConfig } from "@/hooks/useClaudeConfig";
+import { PageLayout } from "@/components/PageLayout";
 
 interface ConfigPageProps {
   claudeConfig: ClaudeConfig | null;
@@ -51,49 +52,51 @@ export function ConfigPage({
   };
 
   return (
-    <div className="space-y-8">
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>配置文件路径</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground break-all">
-              {configPath}
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>全局快捷键</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <HotkeyInput
-              value={claudeConfig?.globalShortcut || ""}
-              onChange={handleHotkeyChange}
-              disabled={isUpdating}
-            />
-            {isUpdating && (
-              <p className="text-sm text-muted-foreground mt-2">
-                正在更新快捷键...
+    <PageLayout title="Configuration">
+      <div className="space-y-8">
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="md:col-span-1">
+            <CardHeader>
+              <CardTitle>Config Path</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground break-all">
+                {configPath}
               </p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {claudeConfig && (
-        <div className="mt-8">
-          <ClaudeConfigComponent
-            claudeConfig={claudeConfig}
-            serverStatus={serverStatus}
-            selectedPath={selectedPath}
-            onSelectDirectory={onSelectDirectory}
-            onControlServer={onControlServer}
-            onUninstallServer={onUninstallServer}
-          />
+            </CardContent>
+          </Card>
+          <Card className="md:col-span-1">
+            <CardHeader>
+              <CardTitle>Global Shortcut</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <HotkeyInput
+                value={claudeConfig?.globalShortcut || ""}
+                onChange={handleHotkeyChange}
+                disabled={isUpdating}
+              />
+              {isUpdating && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Updating shortcut...
+                </p>
+              )}
+            </CardContent>
+          </Card>
         </div>
-      )}
-    </div>
+
+        {claudeConfig && (
+          <div className="mt-8">
+            <ClaudeConfigComponent
+              claudeConfig={claudeConfig}
+              serverStatus={serverStatus}
+              selectedPath={selectedPath}
+              onSelectDirectory={onSelectDirectory}
+              onControlServer={onControlServer}
+              onUninstallServer={onUninstallServer}
+            />
+          </div>
+        )}
+      </div>
+    </PageLayout>
   );
 }
