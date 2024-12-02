@@ -6,6 +6,8 @@
 
 MCP Manager is a visual client tool for managing MCP (Model Context Protocol). With this tool, you can easily manage and operate your MCP environment without executing complex command-line operations manually.
 
+![MCP Manager Screenshot](docs/img/app.png)
+
 ## Key Features
 
 - 🚀 One-click environment installation
