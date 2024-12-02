@@ -1,65 +1,69 @@
-# MCP 管理客户端
+# MCP Manager
 
-## 项目简介
+[English](README.md) | [中文](README_zh.md)
 
-这是一个用于管理 MCP (Model Context Protocol）的可视化客户端工具。通过该工具，您可以轻松地管理和操作 MCP 环境，无需手动执行复杂的命令行操作。
+## Introduction
 
-## 主要功能
+MCP Manager is a visual client tool for managing MCP (Model Context Protocol). With this tool, you can easily manage and operate your MCP environment without executing complex command-line operations manually.
 
-- 🚀 一键安装必备环境
-- 📦 可视化 MCP 安装与卸载
-- 🎮 便捷的 MCP 启动和关闭管理
-- 💻 直观的图形界面操作
-- 🛠 集成化的环境配置
+## Key Features
 
-## 特点
+- 🚀 One-click environment installation
+- 📦 Visual MCP installation and uninstallation
+- 🎮 Convenient MCP start and stop management
+- 💻 Intuitive graphical interface
+- 🛠 Integrated environment configuration
 
-- 简单易用的界面设计
-- 自动化的环境配置
-- 可视化的操作流程
-- 完整的 MCP 生命周期管理
+## Highlights
 
-## 使用说明
+- User-friendly interface design
+- Automated environment configuration
+- Visualized operation process
+- Complete MCP lifecycle management
 
-1. 访问 [Releases 页面](../../releases)
-2. 下载最新版本的安装包
-3. 运行下载的安装包即可开始使用
+## Usage
 
-## 系统要求
+1. Visit the [Releases page](../../releases)
+2. Download the latest version
+3. Run the downloaded package to start using
 
-- 当前支持: macOS
-- 即将支持: Windows（开发中，预计近期发布）
+## System Requirements
 
-## 安装指南
+- Currently supported: macOS
+- Coming soon: Windows (under development, expected release soon)
 
-### macOS 安装步骤
+## Installation Guide
 
-1. 下载并打开 MCP Manager.DMG 文件
-2. 将 MCP Manager.app 拖动到应用程序文件夹
-3. 如果无法打开应用，请双击 DMG 中的"修复权限.command"文件执行修复
+### macOS Installation Steps
 
-> 注：如果"修复权限.command"文件无法执行，您也可以手动打开终端输入以下命令：
+1. Download and open the MCP Manager.DMG file
+2. Drag MCP Manager.app to the Applications folder
+3. If you cannot open the application, double-click the "fix_permissions.command" file in the DMG to execute the fix
+
+> Note: If the "fix_permissions.command" file cannot be executed, you can also manually open the terminal and enter the following command:
 
 ```bash
 xattr -d com.apple.quarantine /Applications/MCP\ Manager.app
 ```
 
-## 许可证
+## License
 
-本项目采用修改版 GPL-3.0 协议。在遵循 GPL-3.0 的基础上附加以下限制：
+This project uses a modified GPL-3.0 license. In addition to following GPL-3.0, the following restrictions apply:
 
-1. 🚫 禁止商业使用
+1. 🚫 Commercial Use Prohibited
 
-   - 不得将本软件用于商业目的
-   - 不得销售本软件或其衍生作品
-   - 不得将本软件集成到商业产品中
-2. ✅ 允许的使用范围
+   - The software may not be used for commercial purposes
+   - The software or its derivatives may not be sold
+   - The software may not be integrated into commercial products
 
-   - 个人学习和研究使用
-   - 非商业性质的教育使用
-   - 开源社区的非商业性分享和改进
-3. 📝 附加要求
+2. ✅ Permitted Uses
 
-   - 任何基于本项目的衍生作品必须同样禁止商业使用
-   - 必须保留原始版权信息和许可证声明
-   - 对本软件的任何修改必须开源
+   - Personal learning and research
+   - Non-commercial educational use
+   - Non-commercial sharing and improvement in the open source community
+
+3. 📝 Additional Requirements
+
+   - Any derivative works based on this project must also prohibit commercial use
+   - Original copyright information and license statements must be retained
+   - Any modifications to this software must be open source

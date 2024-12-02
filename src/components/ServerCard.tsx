@@ -16,7 +16,6 @@ interface ServerCardProps {
 
 export function ServerCard({
   name,
-  command,
   args,
   status,
   onStart,
@@ -63,4 +62,4 @@ export function ServerCard({
       </CardContent>
     </Card>
   );
-} 
+}
