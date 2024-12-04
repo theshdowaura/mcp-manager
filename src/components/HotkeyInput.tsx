@@ -46,7 +46,11 @@ export function HotkeyInput({ value, onChange, disabled }: HotkeyInputProps) {
         ref={inputRef}
         value={value}
         readOnly
-        placeholder={isRecording ? "请按下快捷键..." : "点击录制按钮设置快捷键"}
+        placeholder={
+          isRecording
+            ? "Press shortcut key..."
+            : "Click record button to set shortcut key"
+        }
         onKeyDown={handleKeyDown}
         className={isRecording ? "border-blue-500 ring-2 ring-blue-500/20" : ""}
         disabled={disabled}
@@ -61,4 +65,4 @@ export function HotkeyInput({ value, onChange, disabled }: HotkeyInputProps) {
       </Button>
     </div>
   );
-} 
+}

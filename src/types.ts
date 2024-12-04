@@ -1,6 +1,7 @@
 export interface McpServerConfig {
   command: string;
   args: string[];
+  env?: Record<string, string> | null;
 }
 
 export interface ClaudeConfig {
@@ -15,11 +16,18 @@ export interface McpServerArgs {
 }
 
 export interface McpServerTemplate {
+  id: string;
   name: string;
   description: string;
   command: string;
   args: string[];
   env?: Record<string, string>;
+  require_file_path: boolean;
+  repo_url: string;
+  created_at: string;
+  updated_at: string;
+  downloads: number;
+  total_usage_time: number;
   installed?: boolean;
 }
 
@@ -48,4 +56,14 @@ export interface InstallResult {
   nodePath: string;
   uvPath: string;
   message?: string;
+}
+
+export interface InstalledMcpServer {
+  id: string;
+  name: string;
+  command: string;
+  args: string[];
+  env: Record<string, string> | null;
+  require_file_path: boolean;
+  repo_url: string;
 } 

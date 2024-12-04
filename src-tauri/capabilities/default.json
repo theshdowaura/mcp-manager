@@ -10,6 +10,10 @@
       "allow": [{ "path": "/**" }]
     },
     "dialog:default",
+    "store:allow-get",
+    "store:allow-set",
+    "store:allow-save",
+    "store:allow-load",
     {
       "identifier": "shell:allow-execute",
       "allow": [

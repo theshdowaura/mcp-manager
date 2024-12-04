@@ -28,9 +28,6 @@ function App() {
   const [claudeConfig, setClaudeConfig] = useState<ClaudeConfig | null>(null);
   const [configPath, setConfigPath] = useState<string>("");
   const [claudeInstalled, setClaudeInstalled] = useState<string>("");
-  const [availableServers, setAvailableServers] = useState<McpServerTemplate[]>(
-    []
-  );
   const [envInputs, setEnvInputs] = useState<EnvInputs>({});
   const [serverStatus, setServerStatus] = useState<ServerStatus>({});
   const [selectedPath, setSelectedPath] = useState<Record<string, string>>({});
@@ -53,7 +50,7 @@ function App() {
       const templates = await invoke<McpServerTemplate[]>(
         "get_mcp_server_templates"
       );
-      const templatesWithStatus = await Promise.all(
+      await Promise.all(
         templates.map(async (template: McpServerTemplate) => {
           const installed = await invoke<boolean>("is_mcp_server_installed", {
             name: template.name,
@@ -61,7 +58,6 @@ function App() {
           return { ...template, installed };
         })
       );
-      setAvailableServers(templatesWithStatus);
     } catch (error) {
       console.error("Error getting MCP server templates:", error);
     }
@@ -105,7 +101,7 @@ function App() {
       checkClaudeInstalled(),
     ]);
 
-    console.log("Loaded data:", { envs, config, path, claudeStatus });
+    console.log("Loaded config:", config);
 
     setPythonPath(envs.pythonPath);
     setNodePath(envs.nodePath);
@@ -168,6 +164,20 @@ function App() {
     [handleInstall, checkClaudeInstalled]
   );
 
+  const handleInstallServer = async (template: McpServerTemplate) => {
+    try {
+      console.log('Installing server:', template);
+      await installServer(template);
+      const newConfig = await checkClaudeConfig();
+      console.log('New config after install:', newConfig);
+      setClaudeConfig(newConfig);
+      await updateServerStatus();
+    } catch (error) {
+      console.error('Failed to install server:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     initializeApp();
   }, [initializeApp]);
@@ -175,6 +185,13 @@ function App() {
   useEffect(() => {
     updateServerStatus();
   }, [updateServerStatus, claudeConfig]);
+
+  useEffect(() => {
+    console.log('Config changed:', claudeConfig);
+    if (claudeConfig) {
+      console.log('Installed servers:', Object.keys(claudeConfig.mcpServers));
+    }
+  }, [claudeConfig]);
 
   return (
     <BrowserRouter>
@@ -217,12 +234,11 @@ function App() {
                   path="/servers"
                   element={
                     <ServersPage
-                      availableServers={availableServers}
                       selectedPath={selectedPath}
                       envInputs={envInputs}
                       onSelectDirectory={selectDirectory}
                       onEnvInput={handleEnvInput}
-                      onInstallServer={installServer}
+                      onInstallServer={handleInstallServer}
                     />
                   }
                 />

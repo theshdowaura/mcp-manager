@@ -3,17 +3,12 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct McpServerConfig {
-    pub command: String,
-    pub args: Vec<String>,
-}
+use serde_json::Value as JsonValue;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ClaudeConfig {
     #[serde(rename = "mcpServers")]
-    pub mcp_servers: HashMap<String, McpServerConfig>,
+    pub mcp_servers: HashMap<String, HashMap<String, JsonValue>>,
     #[serde(rename = "globalShortcut")]
     pub global_shortcut: String,
 }
