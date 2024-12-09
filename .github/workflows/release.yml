@@ -11,14 +11,13 @@ on:
         default: 'v0.1.0'
 
 jobs:
-  release:
+  release-macos:
     permissions:
       contents: write
       discussions: write
       pull-requests: write
       issues: write
     runs-on: macos-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -43,7 +42,7 @@ jobs:
       - name: Install frontend dependencies
         run: yarn install
 
-      - name: Build the app
+      - name: Build the app (macOS)
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -114,3 +113,52 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload ${{ github.event.inputs.version || github.ref_name }} "MCP Manager.dmg"
+
+  release-windows:
+    permissions:
+      contents: write
+      discussions: write
+      pull-requests: write
+      issues: write
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.6.1
+          cache: 'yarn'
+
+      - name: Install frontend dependencies
+        run: yarn install
+
+      - name: Build the app (Windows)
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.event.inputs.version || github.ref_name }}
+          releaseName: 'MCP Manager v__VERSION__ (Windows)'
+          releaseBody: 'See the assets to download and install this version.'
+          releaseDraft: false
+          prerelease: false
+
+      - name: Upload Windows artifacts to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 假设 Tauri 在 Windows 下生成的安装文件为 *.msi 或 *.exe，需根据实际情况修改路径和文件名
+          gh release upload ${{ github.event.inputs.version || github.ref_name }} "src-tauri/target/release/bundle/msi/MCP_Manager_*.msi"
